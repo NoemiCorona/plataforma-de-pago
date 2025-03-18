@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Alumno</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h2>Registrar Alumno</h2>
+    <form id="formRegistro">
+        <input type="text" name="matricula" placeholder="Matrícula" required>
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="tel" name="telefono" placeholder="Teléfono" required>
+        <input type="email" name="correo" placeholder="Correo" required>
+        <input type="date" name="fechaInscripcion" required>
+        <button type="submit">Registrar</button>
+    </form>
+
+    <script>
+        document.getElementById('formRegistro').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('http://localhost:5000/api/alumnos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Alumno registrado con éxito');
+                    this.reset();
+                } else {
+                    alert('Error al registrar alumno');
+                }
+            } catch (error) {
+                alert('Error de conexión con el servidor');
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

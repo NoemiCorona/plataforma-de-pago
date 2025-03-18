@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago de Alumnos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Pago de Servicios Escolares</h2>
+
+        <!-- Selección de alumno -->
+        <div class="mb-3">
+            <label for="alumno-select" class="form-label">Selecciona tu nombre:</label>
+            <select id="alumno-select" class="form-control" onchange="mostrarDatosAlumno()">
+                <option value="">-- Selecciona un alumno --</option>
+            </select>
+        </div>
+
+        <!-- Datos del alumno -->
+        <div id="datos-alumno" class="card p-3 mb-4 d-none">
+            <h4>Datos del Alumno</h4>
+            <p><strong>Nombre:</strong> <span id="alumno-nombre"></span></p>
+            <p><strong>Correo:</strong> <span id="alumno-correo"></span></p>
+            <p><strong>Teléfono:</strong> <span id="alumno-telefono"></span></p>
+            <p><strong>Carrera:</strong> <span id="alumno-carrera"></span></p>
+            <p><strong>Semestre:</strong> <span id="alumno-semestre"></span></p>
+        </div>
+
+        <!-- Selección de pago -->
+        <div class="card p-3">
+            <h4>Realizar Pago</h4>
+            <label for="tipo-pago" class="form-label">Selecciona el tipo de pago:</label>
+            <select id="tipo-pago" class="form-control">
+                <option value="mensualidad">Mensualidad</option>
+                <option value="reinscripcion">Reinscripción</option>
+                <option value="extraordinario">Extraordinario</option>
+            </select>
+
+            <label for="monto" class="form-label mt-2">Monto a pagar:</label>
+            <input type="number" id="monto" class="form-control" min="1" required>
+
+            
+            <a href="formulario de pago.html" class="btn btn-primary w-100">pagar</a>
+        </div>
+    </div>
+
+    <script>
+        let alumnos = JSON.parse(localStorage.getItem("alumnos")) || [];
+
+        function cargarAlumnos() {
+            const select = document.getElementById("alumno-select");
+            select.innerHTML = '<option value="">-- Selecciona un alumno --</option>';
+            alumnos.forEach((alumno, index) => {
+                select.innerHTML += `<option value="${index}">${alumno.nombre}</option>`;
+            });
+        }
+
+        function mostrarDatosAlumno() {
+            const index = document.getElementById("alumno-select").value;
+            if (index === "") {
+                document.getElementById("datos-alumno").classList.add("d-none");
+                return;
+            }
+
+            const alumno = alumnos[index];
+            document.getElementById("alumno-nombre").textContent = alumno.nombre;
+            document.getElementById("alumno-correo").textContent = alumno.correo;
+            document.getElementById("alumno-telefono").textContent = alumno.telefono;
+            document.getElementById("alumno-carrera").textContent = alumno.carrera;
+            document.getElementById("alumno-semestre").textContent = alumno.semestre;
+
+            document.getElementById("datos-alumno").classList.remove("d-none");
+        }
+
+        function realizarPago() {
+            const index = document.getElementById("alumno-select").value;
+            if (index === "") {
+                alert("Por favor, selecciona un alumno.");
+                return;
+            }
+
+            const tipoPago = document.getElementById("tipo-pago").value;
+            const monto = document.getElementById("monto").value;
+
+            if (monto <= 0) {
+                alert("El monto debe ser mayor a 0.");
+                return;
+            }
+
+            alert(`Pago realizado con éxito:\nAlumno: ${alumnos[index].nombre}\nTipo de pago: ${tipoPago}\nMonto: $${monto}`);
+        }
+
+        cargarAlumnos();
+    </script>
+</body>
+</html>

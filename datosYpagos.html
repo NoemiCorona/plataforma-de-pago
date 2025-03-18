@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagos de Alumnos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Gestión de Pagos de Alumnos</h2>
+
+        <!-- Barra de búsqueda -->
+        <input type="text" id="search" class="form-control mb-3" placeholder="Buscar alumno...">
+
+        <!-- Tabla de alumnos -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Carrera</th>
+                    <th>Semestre</th>
+                    <th>Pagos Realizados</th>
+                </tr>
+            </thead>
+            <tbody id="alumnos-list"></tbody>
+        </table>
+    </div>
+
+    <script>
+        let alumnos = JSON.parse(localStorage.getItem("alumnos")) || [];
+        let pagos = JSON.parse(localStorage.getItem("pagos")) || [];
+
+        function mostrarAlumnos(filtro = "") {
+            const lista = document.getElementById("alumnos-list");
+            lista.innerHTML = "";
+            alumnos.forEach((alumno) => {
+                if (
+                    alumno.nombre.toLowerCase().includes(filtro) ||
+                    alumno.correo.toLowerCase().includes(filtro) ||
+                    alumno.carrera.toLowerCase().includes(filtro)
+                ) {
+                    const pagosAlumno = pagos.filter(pago => pago.alumno === alumno.nombre);
+                    let pagosHTML = pagosAlumno.length > 0
+                        ? pagosAlumno.map(p => `<li>${p.tipo} - $${p.monto} MXN</li>`).join("")
+                        : "<li>No hay pagos registrados</li>";
+
+                    lista.innerHTML += `
+                        <tr>
+                            <td>${alumno.nombre}</td>
+                            <td>${alumno.correo}</td>
+                            <td>${alumno.carrera}</td>
+                            <td>${alumno.semestre}</td>
+                            <td><ul>${pagosHTML}</ul></td>
+                        </tr>
+                    `;
+                }
+            });
+        }
+
+        document.getElementById("search").addEventListener("input", function() {
+            mostrarAlumnos(this.value.toLowerCase());
+        });
+
+        mostrarAlumnos();
+    </script>
+</body>
+</html>
